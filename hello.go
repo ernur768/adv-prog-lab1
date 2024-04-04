@@ -3,12 +3,12 @@ package main
 import "fmt"
 
 func main() {
-	message := "hello\n"
+	// Byte 13 is carriage return character
+	byteValue := byte(13)
 
-	if len(message) > 0 {
-		lastChar := message[len(message)-1]
-		if lastChar != '\n' {
-			fmt.Println("does not end with new line")
-		}
-	}
+	// Convert byte to string
+	stringValue := string(byteValue)
+
+	// Print the result
+	fmt.Printf("Byte 13 as string:%s0", stringValue)
 }

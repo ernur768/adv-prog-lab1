@@ -19,7 +19,6 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		//fmt.Print("Enter message: ")
 		message, _ := reader.ReadString('\n')
 
 		// Send message to server

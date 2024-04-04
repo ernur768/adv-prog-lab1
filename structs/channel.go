@@ -7,9 +7,10 @@ import (
 )
 
 type Channel struct {
-	name  string
-	users []*User
-	mu    sync.Mutex
+	name    string
+	users   []*User
+	history []string
+	mu      sync.Mutex
 }
 
 func NewChanel(name string) *Channel {
@@ -24,16 +25,13 @@ func (c *Channel) AddUser(user *User) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.users = append(c.users, user)
-	go c.HandleUser(user)
+	go c.handleUser(user)
 }
 
-func (c *Channel) HandleUser(user *User) {
+func (c *Channel) handleUser(user *User) {
 	defer user.CloseConnection()
-	fmt.Println("New client connected:", user)
+	c.SendMessageToUsers("new user connected: " + user.name)
 
-	c.SendMessageToUsers("new user connected" + user.name)
-
-	// Read message from client
 	for {
 		message, err := bufio.NewReader(user.conn).ReadString('\n')
 		if err != nil {
@@ -56,6 +54,7 @@ func (c *Channel) SendMessageFromUser(user *User, message string) {
 			return
 		}
 	}
+	c.addToHistory(message)
 }
 
 func (c *Channel) SendMessageToUsers(message string) {
@@ -66,4 +65,13 @@ func (c *Channel) SendMessageToUsers(message string) {
 			return
 		}
 	}
+	c.addToHistory(message)
+}
+
+func (c *Channel) addToHistory(message string) {
+	c.history = append(c.history, message)
+}
+
+func (c *Channel) GetHistory() []string {
+	return c.history
 }

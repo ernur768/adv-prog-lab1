@@ -16,7 +16,8 @@ func NewUser(conn net.Conn, name string) *User {
 	}
 }
 
-func (u *User) setName(name string) {
+func (u *User) SetName(name string) {
+	name = name[0 : len(name)-2]
 	u.name = name
 }
 
